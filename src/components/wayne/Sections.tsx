@@ -2,9 +2,48 @@ import { useEffect, useRef, useState } from "react";
 import {
   Bot, Phone, Users, Megaphone, Radio, History, BarChart3, Plug, Settings, CreditCard, UserPlus, MessageSquare,
   Building2, Stethoscope, Wrench, ShieldCheck, Car, Truck, GraduationCap, ShoppingBag, Landmark, Sparkles,
-  Check, Play, ArrowRight, Code2, Lock, KeyRound, Cloud, Zap, MinusCircle, PlusCircle, Mic, Waves
+  Check, Play, ArrowRight, Code2, Lock, KeyRound, Cloud, Zap, MinusCircle, PlusCircle, Mic, Waves,
+  Ear, Brain, MessageCircle, Volume2, Rocket, Clock, DollarSign, HeartHandshake
 } from "lucide-react";
 import { SectionHeader, Waveform } from "./Backdrop";
+import heroVideoPoster from "../../assets/hero-voice-agent.jpg.asset.json";
+
+/* ---------- Product video / walkthrough ---------- */
+export function ProductVideo() {
+  return (
+    <section id="demo" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-4">
+        <SectionHeader eyebrow="Product walkthrough" title={<>See WayneRing <span className="text-gradient">in action</span></>} sub="A 90-second tour of how an AI agent takes a real call — from ring to booked appointment." />
+        <div className="relative mt-12 overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/50">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-[var(--brand)]/30 via-transparent to-[var(--brand-2)]/30 blur-2xl" />
+          <img
+            src={heroVideoPoster.url}
+            alt="AI voice agent with headset, microphone and animated waveforms — WayneRing product preview"
+            width={1600}
+            height={912}
+            loading="lazy"
+            className="h-auto w-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 via-black/10 to-transparent">
+            <button
+              type="button"
+              aria-label="Play product walkthrough"
+              className="group flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-5 py-3 backdrop-blur transition-transform hover:scale-[1.04]"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-brand text-white shadow-lg shadow-primary/40">
+                <Play className="h-5 w-5 translate-x-0.5" fill="currentColor" />
+              </span>
+              <span className="pr-2 text-sm font-medium text-white">See WayneRing in action · 1:24</span>
+            </button>
+          </div>
+          <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-wider text-white/80 backdrop-blur">
+            Product demo · illustrative preview
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ---------- Industries marquee ---------- */
 const industries = [
@@ -302,11 +341,11 @@ function TeamPreview() {
 /* ---------- AI Voice Tech flow ---------- */
 export function VoiceTech() {
   const steps = [
-    { l: "Customer speaks", d: "Real-time audio in" },
-    { l: "Speech recognition", d: "Low-latency STT" },
-    { l: "AI understands intent", d: "Context-aware LLM" },
-    { l: "AI generates response", d: "Objective-driven" },
-    { l: "Natural voice reply", d: "Sub-second TTS" },
+    { l: "Customer speaks", d: "Real-time audio in", i: MessageCircle },
+    { l: "Speech recognition", d: "Low-latency STT", i: Ear },
+    { l: "AI understands intent", d: "Context-aware LLM", i: Brain },
+    { l: "AI generates response", d: "Objective-driven", i: Sparkles },
+    { l: "Natural voice reply", d: "Sub-second TTS", i: Volume2 },
   ];
   return (
     <section className="relative py-28">
@@ -315,8 +354,13 @@ export function VoiceTech() {
         <div className="mt-14 grid gap-3 md:grid-cols-5">
           {steps.map((s, i) => (
             <div key={s.l} className="relative glass rounded-2xl p-5">
-              <div className="text-xs font-medium text-[var(--mint)]">0{i + 1}</div>
-              <div className="mt-1 font-medium">{s.l}</div>
+              <div className="flex items-center justify-between">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-brand text-white shadow-lg shadow-primary/30">
+                  <s.i className="h-5 w-5" />
+                </span>
+                <span className="text-xs font-medium text-[var(--mint)]">0{i + 1}</span>
+              </div>
+              <div className="mt-3 font-medium">{s.l}</div>
               <div className="text-xs text-muted-foreground">{s.d}</div>
               {i < steps.length - 1 && (
                 <div className="absolute right-[-14px] top-1/2 hidden -translate-y-1/2 md:block">
@@ -508,36 +552,42 @@ export function Security() {
   );
 }
 
-/* ---------- Testimonials ---------- */
-const quotes = [
-  { n: "Alexis Moreau", r: "Head of Growth · SunPeak", q: "We replaced a 12-person outbound team's night shift and doubled qualified meetings in a month." },
-  { n: "Jordan Blake", r: "COO · Northline HVAC", q: "Our AI agent books more service calls than our best rep — and never forgets a follow-up." },
-  { n: "Maya Iyer", r: "Founder · Bloomcare", q: "Patients think it's a real person. The transcripts alone changed how we train staff." },
-  { n: "Sam Okafor", r: "Sales lead · MidwestAuto", q: "Set up in an afternoon, live campaigns by dinner. Ridiculous product." },
-  { n: "Talia Fischer", r: "Ops · Cascade Insurance", q: "Every renewal call, every time. Our churn dropped for the first time in years." },
+/* ---------- Why teams switch (early-access value props) ---------- */
+const reasons = [
+  { i: Rocket, t: "Live in under 30 minutes", d: "Design an agent, pick a voice, connect a number — and start taking real calls the same afternoon. No integrations required to begin." },
+  { i: Clock, t: "Always on, never tired", d: "Your AI agent answers inbound calls at 3am and follows up outbound leads within seconds — the same way, every time, every day." },
+  { i: DollarSign, t: "Usage-based, no seat tax", d: "Pay for the minutes your agents actually talk. Scale from a handful of calls to thousands without hiring, training or ramping a team." },
+  { i: HeartHandshake, t: "Built with early partners", d: "We're onboarding founding customers now and shaping the roadmap around real workflows — not a marketing wishlist." },
 ];
 
-export function Testimonials() {
-  const row = [...quotes, ...quotes];
+export function WhySwitch() {
   return (
     <section className="relative py-28">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionHeader eyebrow="Loved by teams" title={<>Teams that <span className="text-gradient">talk for a living</span></>} />
-        <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div className="flex w-max animate-marquee gap-4 hover:[animation-play-state:paused]">
-            {row.map((q,i)=>(
-              <div key={i} className="w-[360px] shrink-0 glass rounded-2xl p-6">
-                <p className="text-sm leading-relaxed">"{q.q}"</p>
-                <div className="mt-5 flex items-center gap-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-brand text-sm text-white">{q.n[0]}</span>
-                  <div>
-                    <div className="text-sm font-medium">{q.n}</div>
-                    <div className="text-[11px] text-muted-foreground">{q.r}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <SectionHeader
+          eyebrow="Why WayneRing"
+          title={<>Why teams are <span className="text-gradient">switching to WayneRing</span></>}
+          sub="We're an early-stage platform launching with founding customers. Here's what they get on day one — and why it matters."
+        />
+        <div className="mt-14 grid gap-4 sm:grid-cols-2">
+          {reasons.map((r) => (
+            <div key={r.t} className="glass group relative overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-1 hover:border-white/15">
+              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[var(--brand)]/10 blur-2xl transition-opacity group-hover:bg-[var(--brand)]/25" />
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-brand text-white shadow-lg shadow-primary/30">
+                <r.i className="h-5 w-5" />
+              </span>
+              <div className="mt-4 text-lg font-medium">{r.t}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{r.d}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto mt-10 flex max-w-2xl flex-col items-center gap-3 text-center">
+          <p className="text-sm text-muted-foreground">
+            Be one of our first partners. Founding customers get direct access to the team, hands-on onboarding and a say in what we build next.
+          </p>
+          <a href="#start" className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary/40 transition-transform hover:scale-[1.03]">
+            Apply for early access <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </section>

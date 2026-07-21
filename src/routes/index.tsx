@@ -6,7 +6,7 @@ import { Aurora, SectionHeader, Waveform } from "@/components/wayne/Backdrop";
 import { DashboardMock } from "@/components/wayne/DashboardMock";
 import {
   IndustryMarquee, FeatureModules, VoiceTech, HowItWorks, UseCases,
-  Integrations, DeveloperApi, Security, Testimonials, Pricing, Faq, FinalCTA, Footer
+  Integrations, DeveloperApi, Security, WhySwitch, Pricing, Faq, FinalCTA, Footer, ProductVideo
 } from "@/components/wayne/Sections";
 
 export const Route = createFileRoute("/")({
@@ -18,6 +18,7 @@ function Index() {
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <Nav />
       <Hero />
+      <ProductVideo />
       <IndustryMarquee />
       <FeatureModules />
       <VoiceTech />
@@ -26,7 +27,7 @@ function Index() {
       <Integrations />
       <DeveloperApi />
       <Security />
-      <Testimonials />
+      <WhySwitch />
       <Pricing />
       <Faq />
       <FinalCTA />
@@ -50,7 +51,7 @@ function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--mint)] opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--mint)]" />
             </span>
-            <span className="text-muted-foreground">Live · 24,891 AI calls handled today</span>
+            <span className="text-muted-foreground">Live demo — see WayneRing in action</span>
           </div>
           <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-7xl md:text-[88px]">
             AI conversations that <span className="text-gradient">never stop working</span>
