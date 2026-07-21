@@ -341,11 +341,11 @@ function TeamPreview() {
 /* ---------- AI Voice Tech flow ---------- */
 export function VoiceTech() {
   const steps = [
-    { l: "Customer speaks", d: "Real-time audio in" },
-    { l: "Speech recognition", d: "Low-latency STT" },
-    { l: "AI understands intent", d: "Context-aware LLM" },
-    { l: "AI generates response", d: "Objective-driven" },
-    { l: "Natural voice reply", d: "Sub-second TTS" },
+    { l: "Customer speaks", d: "Real-time audio in", i: MessageCircle },
+    { l: "Speech recognition", d: "Low-latency STT", i: Ear },
+    { l: "AI understands intent", d: "Context-aware LLM", i: Brain },
+    { l: "AI generates response", d: "Objective-driven", i: Sparkles },
+    { l: "Natural voice reply", d: "Sub-second TTS", i: Volume2 },
   ];
   return (
     <section className="relative py-28">
@@ -354,8 +354,13 @@ export function VoiceTech() {
         <div className="mt-14 grid gap-3 md:grid-cols-5">
           {steps.map((s, i) => (
             <div key={s.l} className="relative glass rounded-2xl p-5">
-              <div className="text-xs font-medium text-[var(--mint)]">0{i + 1}</div>
-              <div className="mt-1 font-medium">{s.l}</div>
+              <div className="flex items-center justify-between">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-brand text-white shadow-lg shadow-primary/30">
+                  <s.i className="h-5 w-5" />
+                </span>
+                <span className="text-xs font-medium text-[var(--mint)]">0{i + 1}</span>
+              </div>
+              <div className="mt-3 font-medium">{s.l}</div>
               <div className="text-xs text-muted-foreground">{s.d}</div>
               {i < steps.length - 1 && (
                 <div className="absolute right-[-14px] top-1/2 hidden -translate-y-1/2 md:block">
