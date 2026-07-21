@@ -6,42 +6,234 @@ import {
   Ear, Brain, MessageCircle, Volume2, Rocket, Clock, DollarSign, HeartHandshake
 } from "lucide-react";
 import { SectionHeader, Waveform } from "./Backdrop";
-import heroVideoPoster from "../../assets/hero-voice-agent.jpg.asset.json";
 
 /* ---------- Product video / walkthrough ---------- */
 export function ProductVideo() {
+  const scenes = ["ringing", "answering", "booking", "summary"] as const;
+  type Scene = typeof scenes[number];
+  const durations: Record<Scene, number> = { ringing: 2600, answering: 6200, booking: 3000, summary: 3200 };
+  const [scene, setScene] = useState<Scene>("ringing");
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setScene((s) => scenes[(scenes.indexOf(s) + 1) % scenes.length]);
+    }, durations[scene]);
+    return () => clearTimeout(t);
+  }, [scene]);
+
   return (
     <section id="demo" className="relative py-20">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeader eyebrow="Product walkthrough" title={<>See WayneRing <span className="text-gradient">in action</span></>} sub="A 90-second tour of how an AI agent takes a real call — from ring to booked appointment." />
-        <div className="relative mt-12 overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/50">
+        <div className="relative mt-12">
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-[var(--brand)]/30 via-transparent to-[var(--brand-2)]/30 blur-2xl" />
-          <img
-            src={heroVideoPoster.url}
-            alt="AI voice agent with headset, microphone and animated waveforms — WayneRing product preview"
-            width={1600}
-            height={912}
-            loading="lazy"
-            className="h-auto w-full"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 via-black/10 to-transparent">
-            <button
-              type="button"
-              aria-label="Play product walkthrough"
-              className="group flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-5 py-3 backdrop-blur transition-transform hover:scale-[1.04]"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-brand text-white shadow-lg shadow-primary/40">
-                <Play className="h-5 w-5 translate-x-0.5" fill="currentColor" />
+          <div className="glass relative overflow-hidden rounded-3xl p-4 shadow-2xl shadow-black/50">
+            {/* window chrome */}
+            <div className="flex items-center gap-2 px-2 pb-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+              <div className="ml-3 flex-1 rounded-md bg-white/5 px-3 py-1 text-xs text-muted-foreground">app.waynering.ai/live</div>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                Product demo · illustrative preview
               </span>
-              <span className="pr-2 text-sm font-medium text-white">See WayneRing in action · 1:24</span>
-            </button>
-          </div>
-          <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-wider text-white/80 backdrop-blur">
-            Product demo · illustrative preview
+            </div>
+
+            <div className="relative h-[460px] overflow-hidden rounded-2xl bg-[var(--background)]/70 p-6 sm:h-[440px]">
+              {/* step indicator */}
+              <div className="absolute right-4 top-4 z-10 flex items-center gap-1.5">
+                {scenes.map((s) => (
+                  <span
+                    key={s}
+                    className={`h-1.5 rounded-full transition-all duration-500 ${scene === s ? "w-8 bg-gradient-brand" : "w-1.5 bg-white/15"}`}
+                  />
+                ))}
+              </div>
+
+              {scene === "ringing" && <SceneRinging />}
+              {scene === "answering" && <SceneAnswering />}
+              {scene === "booking" && <SceneBooking />}
+              {scene === "summary" && <SceneSummary />}
+            </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function SceneRinging() {
+  return (
+    <div className="flex h-full animate-fade-up flex-col items-center justify-center text-center">
+      <div className="relative">
+        <span className="absolute inset-0 -z-10 rounded-full bg-[var(--brand)]/40 blur-2xl" />
+        <span className="absolute inset-0 animate-ping rounded-full bg-[var(--brand-2)]/30" />
+        <span className="absolute -inset-4 rounded-full border border-white/10" style={{ animation: "pulse-ring 1.8s ease-out infinite" }} />
+        <span className="absolute -inset-8 rounded-full border border-white/5" style={{ animation: "pulse-ring 1.8s ease-out 0.4s infinite" }} />
+        <span className="relative grid h-24 w-24 place-items-center rounded-full bg-gradient-brand text-white shadow-2xl shadow-primary/40">
+          <Phone className="h-10 w-10" />
+        </span>
+      </div>
+      <div className="mt-8 text-xs uppercase tracking-[0.25em] text-[var(--mint)]">Incoming call</div>
+      <div className="mt-2 text-2xl font-semibold">+1 (415) 555-0134</div>
+      <div className="mt-1 text-sm text-muted-foreground">Unknown caller · Mobile</div>
+      <div className="mt-6 flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-muted-foreground">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--mint)] opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--mint)]" />
+        </span>
+        Nova is picking up…
+      </div>
+    </div>
+  );
+}
+
+type Line = { who: "AI" | "Customer"; text: string; delay: number };
+const transcript: Line[] = [
+  { who: "AI", text: "Hi, thanks for calling WayneRing Pizza — how can I help?", delay: 200 },
+  { who: "Customer", text: "I'd like to book a table for 4 tonight.", delay: 1800 },
+  { who: "AI", text: "Sure, let me check availability for you…", delay: 3600 },
+];
+
+function SceneAnswering() {
+  return (
+    <div className="flex h-full animate-fade-up flex-col">
+      <div className="flex items-center gap-3">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-brand text-white">
+          <Mic className="h-5 w-5" />
+        </span>
+        <div>
+          <div className="text-sm font-medium">Nova · WayneRing Pizza agent</div>
+          <div className="text-[11px] text-muted-foreground">Connected · 00:12</div>
+        </div>
+        <div className="ml-auto"><Waveform bars={18} className="h-8" /></div>
+      </div>
+
+      <div className="mt-5 flex flex-1 flex-col gap-2.5 overflow-hidden">
+        {transcript.map((l, idx) => (
+          <TypingBubble key={idx} line={l} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TypingBubble({ line }: { line: Line }) {
+  const [shown, setShown] = useState("");
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const show = setTimeout(() => setVisible(true), line.delay);
+    return () => clearTimeout(show);
+  }, [line.delay]);
+  useEffect(() => {
+    if (!visible) return;
+    let i = 0;
+    const iv = setInterval(() => {
+      i++;
+      setShown(line.text.slice(0, i));
+      if (i >= line.text.length) clearInterval(iv);
+    }, 22);
+    return () => clearInterval(iv);
+  }, [visible, line.text]);
+  if (!visible) return null;
+  const isAI = line.who === "AI";
+  return (
+    <div className={`flex animate-fade-up ${isAI ? "" : "justify-end"}`}>
+      <div
+        className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm ${
+          isAI
+            ? "rounded-tl-sm border border-white/10 bg-gradient-to-br from-[var(--brand)]/20 to-[var(--brand-2)]/10"
+            : "rounded-tr-sm border border-white/5 bg-white/[0.04]"
+        }`}
+      >
+        <div className={`mb-0.5 text-[10px] uppercase tracking-wider ${isAI ? "text-[var(--brand-2)]" : "text-muted-foreground"}`}>{line.who}</div>
+        <div>
+          {shown}
+          {shown.length < line.text.length && <span className="ml-0.5 inline-block h-3 w-[2px] animate-pulse bg-foreground align-middle" />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SceneBooking() {
+  return (
+    <div className="flex h-full animate-fade-up flex-col items-center justify-center">
+      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-gradient-to-br from-[var(--brand)]/15 to-[var(--brand-2)]/10 p-5 shadow-xl">
+        <div className="flex items-center gap-3">
+          <span className="relative grid h-12 w-12 place-items-center rounded-full bg-[var(--mint)]/20">
+            <span className="absolute inset-0 animate-ping rounded-full bg-[var(--mint)]/30" />
+            <Check className="relative h-6 w-6 text-[var(--mint)]" strokeWidth={3} />
+          </span>
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-[var(--mint)]">Action completed</div>
+            <div className="text-base font-semibold">Appointment booked</div>
+          </div>
+        </div>
+        <div className="mt-5 space-y-2 text-sm">
+          <Row label="Party size" value="Table for 4" />
+          <Row label="Time" value="Tonight · 7:30 PM" />
+          <Row label="Name" value="From caller ID" />
+          <Row label="Confirmation" value="#WR-2841" />
+        </div>
+        <div className="mt-5 flex items-center justify-between rounded-xl bg-black/30 px-3 py-2 text-[11px]">
+          <span className="text-muted-foreground">Synced to</span>
+          <span className="flex items-center gap-2 font-medium">Google Calendar · OpenTable</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-white/5 pb-1.5 text-sm last:border-0">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium">{value}</span>
+    </div>
+  );
+}
+
+function SceneSummary() {
+  return (
+    <div className="flex h-full animate-fade-up flex-col">
+      <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Call summary</div>
+      <div className="mt-1 text-xl font-semibold">Reservation for 4 · 7:30 PM</div>
+
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { l: "Duration", v: "1:24" },
+          { l: "Outcome", v: "Converted", tone: "brand" as const },
+          { l: "Sentiment", v: "Positive", tone: "mint" as const },
+          { l: "Cost", v: "$0.11" },
+        ].map((s) => (
+          <div key={s.l} className="rounded-xl border border-white/5 bg-white/[0.03] p-3">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
+            <div
+              className={`mt-1 text-base font-semibold ${
+                s.tone === "brand" ? "text-gradient" : s.tone === "mint" ? "text-[var(--mint)]" : ""
+              }`}
+            >
+              {s.v}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex-1 rounded-xl border border-white/5 bg-white/[0.03] p-4">
+        <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Transcript summary</div>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Caller requested a reservation for 4 tonight. Nova confirmed availability at{" "}
+          <span className="text-foreground">7:30 PM</span>, booked the table, and synced the event to Google Calendar and OpenTable. No follow-up required.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {["reservation", "new-customer", "high-intent", "resolved"].map((t) => (
+            <span key={t} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-muted-foreground">
+              #{t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
