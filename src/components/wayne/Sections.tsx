@@ -2,9 +2,48 @@ import { useEffect, useRef, useState } from "react";
 import {
   Bot, Phone, Users, Megaphone, Radio, History, BarChart3, Plug, Settings, CreditCard, UserPlus, MessageSquare,
   Building2, Stethoscope, Wrench, ShieldCheck, Car, Truck, GraduationCap, ShoppingBag, Landmark, Sparkles,
-  Check, Play, ArrowRight, Code2, Lock, KeyRound, Cloud, Zap, MinusCircle, PlusCircle, Mic, Waves
+  Check, Play, ArrowRight, Code2, Lock, KeyRound, Cloud, Zap, MinusCircle, PlusCircle, Mic, Waves,
+  Ear, Brain, MessageCircle, Volume2, Rocket, Clock, DollarSign, HeartHandshake
 } from "lucide-react";
 import { SectionHeader, Waveform } from "./Backdrop";
+import heroVideoPoster from "../../assets/hero-voice-agent.jpg.asset.json";
+
+/* ---------- Product video / walkthrough ---------- */
+export function ProductVideo() {
+  return (
+    <section id="demo" className="relative py-20">
+      <div className="mx-auto max-w-6xl px-4">
+        <SectionHeader eyebrow="Product walkthrough" title={<>See WayneRing <span className="text-gradient">in action</span></>} sub="A 90-second tour of how an AI agent takes a real call — from ring to booked appointment." />
+        <div className="relative mt-12 overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/50">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-[var(--brand)]/30 via-transparent to-[var(--brand-2)]/30 blur-2xl" />
+          <img
+            src={heroVideoPoster.url}
+            alt="AI voice agent with headset, microphone and animated waveforms — WayneRing product preview"
+            width={1600}
+            height={912}
+            loading="lazy"
+            className="h-auto w-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 via-black/10 to-transparent">
+            <button
+              type="button"
+              aria-label="Play product walkthrough"
+              className="group flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-5 py-3 backdrop-blur transition-transform hover:scale-[1.04]"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-brand text-white shadow-lg shadow-primary/40">
+                <Play className="h-5 w-5 translate-x-0.5" fill="currentColor" />
+              </span>
+              <span className="pr-2 text-sm font-medium text-white">See WayneRing in action · 1:24</span>
+            </button>
+          </div>
+          <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-wider text-white/80 backdrop-blur">
+            Product demo · illustrative preview
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ---------- Industries marquee ---------- */
 const industries = [
