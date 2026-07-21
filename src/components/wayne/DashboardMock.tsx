@@ -12,6 +12,7 @@ export function DashboardMock() {
           <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
           <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
           <div className="ml-3 flex-1 rounded-md bg-white/5 px-3 py-1 text-xs text-muted-foreground">app.waynering.ai/dashboard</div>
+          <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">Sample dashboard preview</span>
         </div>
 
         <div className="grid grid-cols-6 gap-3 rounded-2xl bg-[var(--background)]/70 p-4">
