@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Waves } from "lucide-react";
+import { openLeadModal } from "@/components/wayne/LeadModal";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -39,8 +40,8 @@ export function Nav() {
           </nav>
           <div className="hidden items-center gap-2 lg:flex">
             <a href="#login" className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground">Login</a>
-            <a href="#demo" className="rounded-lg border border-white/10 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-white/5">Book demo</a>
-            <a href="#start" className="rounded-lg bg-gradient-brand px-4 py-2 text-sm font-medium text-white shadow-lg shadow-primary/30 transition-transform hover:scale-[1.03]">Start free</a>
+            <button onClick={() => openLeadModal("demo")} className="rounded-lg border border-white/10 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-white/5">Book demo</button>
+            <button onClick={() => openLeadModal("demo")} className="rounded-lg bg-gradient-brand px-4 py-2 text-sm font-medium text-white shadow-lg shadow-primary/30 transition-transform hover:scale-[1.03]">Start free</button>
           </div>
           <button aria-label="Menu" onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 lg:hidden">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -53,7 +54,7 @@ export function Nav() {
                 {l.label}
               </a>
             ))}
-            <a href="#start" className="mt-1 rounded-lg bg-gradient-brand px-4 py-2.5 text-center text-sm font-medium text-white">Start free</a>
+            <button onClick={() => { setOpen(false); openLeadModal("demo"); }} className="mt-1 rounded-lg bg-gradient-brand px-4 py-2.5 text-center text-sm font-medium text-white">Start free</button>
           </div>
         )}
       </div>

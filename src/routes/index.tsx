@@ -4,6 +4,8 @@ import { ArrowRight, Play, Sparkles } from "lucide-react";
 import { Nav } from "@/components/wayne/Nav";
 import { Aurora, SectionHeader, Waveform } from "@/components/wayne/Backdrop";
 import { DashboardMock } from "@/components/wayne/DashboardMock";
+import { LeadModal, openLeadModal } from "@/components/wayne/LeadModal";
+import { useSection } from "@/lib/cms";
 import {
   IndustryMarquee, FeatureModules, VoiceTech, HowItWorks, UseCases,
   Integrations, DeveloperApi, Security, WhySwitch, Pricing, Faq, FinalCTA, Footer, ProductVideo
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <LeadModal />
       <Nav />
       <Hero />
       <ProductVideo />
@@ -38,8 +41,17 @@ function Index() {
 
 const rotating = ["AI calls", "Lead qualification", "Appointment booking", "Customer support", "Follow-ups", "Sales automation"];
 
+const HERO_FALLBACK = {
+  headline: "AI conversations that never stop working",
+  description:
+    "WayneRing helps businesses automate inbound and outbound calls with intelligent AI voice agents that talk, listen, respond, qualify leads, book appointments and manage customer conversations — 24/7.",
+  primary_cta: "Start calling with AI",
+  secondary_cta: "Watch WayneRing in action",
+};
+
 function Hero() {
   const [i, setI] = useState(0);
+  const hero = useSection("hero", HERO_FALLBACK);
   useEffect(() => { const t = setInterval(() => setI((x) => (x + 1) % rotating.length), 2200); return () => clearInterval(t); }, []);
   return (
     <section className="relative isolate pt-40 pb-24 sm:pt-48">
@@ -54,18 +66,18 @@ function Hero() {
             <span className="text-muted-foreground">Live demo — see WayneRing in action</span>
           </div>
           <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-7xl md:text-[88px]">
-            AI conversations that <span className="text-gradient">never stop working</span>
+            {hero.headline}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base text-muted-foreground sm:text-lg">
-            WayneRing helps businesses automate inbound and outbound calls with intelligent AI voice agents that talk, listen, respond, qualify leads, book appointments and manage customer conversations — 24/7.
+            {hero.description}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="#start" className="group inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-3 text-sm font-medium text-white shadow-lg shadow-primary/40 transition-transform hover:scale-[1.03]">
-              Start calling with AI <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a href="#demo" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium backdrop-blur transition-colors hover:bg-white/10">
-              <Play className="h-4 w-4" /> Watch WayneRing in action
-            </a>
+            <button onClick={() => openLeadModal("demo")} className="group inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-3 text-sm font-medium text-white shadow-lg shadow-primary/40 transition-transform hover:scale-[1.03]">
+              {hero.primary_cta} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+            <button onClick={() => openLeadModal("demo")} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium backdrop-blur transition-colors hover:bg-white/10">
+              <Play className="h-4 w-4" /> {hero.secondary_cta}
+            </button>
           </div>
           <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5 text-[var(--mint)]" />

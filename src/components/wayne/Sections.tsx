@@ -6,6 +6,8 @@ import {
   Ear, Brain, MessageCircle, Volume2, Rocket, Clock, DollarSign, HeartHandshake
 } from "lucide-react";
 import { SectionHeader, Waveform } from "./Backdrop";
+import { openLeadModal } from "./LeadModal";
+import { useSection, usePricingPlans, useFaqs } from "@/lib/cms";
 
 /* ---------- Product video / walkthrough ---------- */
 export function ProductVideo() {
@@ -247,10 +249,14 @@ const industries = [
 
 export function IndustryMarquee() {
   const row = [...industries, ...industries];
+  const content = useSection("industries", {
+    headline: "Built for teams that talk to customers",
+    subtext: "From 10 calls to 10,000 — WayneRing scales with your business.",
+  });
   return (
     <section className="border-y border-white/5 bg-white/[0.02] py-14">
       <div className="mx-auto max-w-7xl px-4">
-        <p className="text-center text-sm uppercase tracking-[0.2em] text-muted-foreground">Built for teams that talk to customers</p>
+        <p className="text-center text-sm uppercase tracking-[0.2em] text-muted-foreground">{content.headline}</p>
         <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
           <div className="flex w-max animate-marquee gap-4">
             {row.map((x, i) => (
@@ -261,7 +267,7 @@ export function IndustryMarquee() {
             ))}
           </div>
         </div>
-        <p className="mt-6 text-center text-sm text-muted-foreground">From 10 calls to 10,000 — WayneRing scales with your business.</p>
+        <p className="mt-6 text-center text-sm text-muted-foreground">{content.subtext}</p>
       </div>
     </section>
   );
@@ -788,31 +794,31 @@ export function WhySwitch() {
 
 /* ---------- Pricing ---------- */
 export function Pricing() {
-  const plans = [
-    { n: "Starter", p: "$49", per: "/mo", d: "For teams testing AI calling.", f: ["1 AI agent","500 monthly minutes","1 campaign","Basic analytics","Email support"] },
-    { n: "Growth", p: "$249", per: "/mo", d: "For teams running real campaigns.", f: ["5 AI agents","5,000 minutes","Unlimited campaigns","Advanced analytics","Integrations & webhooks","Priority support"], featured: true },
-    { n: "Enterprise", p: "Contact sales", per: "", d: "For orgs scaling AI conversations.", f: ["Unlimited agents","Custom minutes","SSO & roles","API access","Dedicated CSM","SLA & DPA"] },
+  const fallbackPlans = [
+    { id: -1, name: "Starter", price: "$49", billing_period: "/mo", features: ["1 AI agent","500 monthly minutes","1 campaign","Basic analytics","Email support"], highlighted: false },
+    { id: -2, name: "Growth", price: "$249", billing_period: "/mo", features: ["5 AI agents","5,000 minutes","Unlimited campaigns","Advanced analytics","Integrations & webhooks","Priority support"], highlighted: true },
+    { id: -3, name: "Enterprise", price: "Contact sales", billing_period: "", features: ["Unlimited agents","Custom minutes","SSO & roles","API access","Dedicated CSM","SLA & DPA"], highlighted: false },
   ];
+  const plans = usePricingPlans(fallbackPlans);
   return (
     <section id="pricing" className="relative py-28">
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeader eyebrow="Pricing" title={<>Simple, <span className="text-gradient">usage-based</span> pricing</>} sub="Start free. Upgrade when your AI agents earn it." />
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {plans.map((p)=>(
-            <div key={p.n} className={`relative rounded-3xl p-8 ${p.featured ? "glass glow-brand" : "border border-white/10 bg-white/[0.02]"}`}>
-              {p.featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-brand px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white">Recommended</div>}
-              <div className="text-sm font-medium text-muted-foreground">{p.n}</div>
+            <div key={p.name} className={`relative rounded-3xl p-8 ${p.highlighted ? "glass glow-brand" : "border border-white/10 bg-white/[0.02]"}`}>
+              {p.highlighted && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-brand px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white">Recommended</div>}
+              <div className="text-sm font-medium text-muted-foreground">{p.name}</div>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-4xl font-semibold">{p.p}</span>
-                <span className="text-sm text-muted-foreground">{p.per}</span>
+                <span className="text-4xl font-semibold">{p.price}</span>
+                <span className="text-sm text-muted-foreground">{p.billing_period}</span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{p.d}</p>
               <ul className="mt-6 space-y-2.5 text-sm">
-                {p.f.map(x=>(<li key={x} className="flex items-center gap-2"><Check className="h-4 w-4 text-[var(--mint)]"/>{x}</li>))}
+                {(p.features || []).map(x=>(<li key={x} className="flex items-center gap-2"><Check className="h-4 w-4 text-[var(--mint)]"/>{x}</li>))}
               </ul>
-              <a href="#start" className={`mt-8 inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${p.featured ? "bg-gradient-brand text-white shadow-lg shadow-primary/30 hover:scale-[1.02]" : "border border-white/10 hover:bg-white/5"}`}>
-                {p.n === "Enterprise" ? "Talk to sales" : "Start free"}
-              </a>
+              <button onClick={() => openLeadModal(p.name === "Enterprise" ? "pricing" : "demo", p.name)} className={`mt-8 inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${p.highlighted ? "bg-gradient-brand text-white shadow-lg shadow-primary/30 hover:scale-[1.02]" : "border border-white/10 hover:bg-white/5"}`}>
+                {p.name === "Enterprise" ? "Talk to sales" : "Start free"}
+              </button>
             </div>
           ))}
         </div>
@@ -838,12 +844,13 @@ const faqs = [
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
+  const faqData = useFaqs(faqs as [string, string][]);
   return (
     <section className="relative py-28">
       <div className="mx-auto max-w-3xl px-4">
         <SectionHeader eyebrow="FAQ" title={<>Answers, in <span className="text-gradient">plain English</span></>} />
         <div className="mt-12 space-y-2">
-          {faqs.map(([q,a], i) => (
+          {faqData.map(([q,a], i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02]">
               <button onClick={()=>setOpen(open===i?null:i)} className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left">
                 <span className="text-sm font-medium">{q}</span>
@@ -864,6 +871,10 @@ export function Faq() {
 
 /* ---------- Final CTA ---------- */
 export function FinalCTA() {
+  const content = useSection("final_cta", {
+    headline: "Your Next Conversation Could Be Automated.",
+    description: "Build your AI voice agent and start transforming the way your business communicates.",
+  });
   return (
     <section id="start" className="relative py-32">
       <div className="mx-auto max-w-5xl px-4">
@@ -873,11 +884,11 @@ export function FinalCTA() {
             <Mic className="h-4 w-4 text-[var(--mint)]"/>
             <Waveform bars={24} className="h-6"/>
           </div>
-          <h2 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">Your next conversation<br/>could be <span className="text-gradient">automated</span>.</h2>
-          <p className="mx-auto mt-5 max-w-xl text-muted-foreground">Build your AI voice agent and start transforming the way your business communicates.</p>
+          <h2 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">{content.headline}</h2>
+          <p className="mx-auto mt-5 max-w-xl text-muted-foreground">{content.description}</p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="#start" className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-6 py-3 text-sm font-medium text-white shadow-lg shadow-primary/40 transition-transform hover:scale-[1.03]">Start free <ArrowRight className="h-4 w-4"/></a>
-            <a href="#demo" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium hover:bg-white/10">Book a demo</a>
+            <button onClick={() => openLeadModal("demo")} className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-6 py-3 text-sm font-medium text-white shadow-lg shadow-primary/40 transition-transform hover:scale-[1.03]">Start free <ArrowRight className="h-4 w-4"/></button>
+            <button onClick={() => openLeadModal("demo")} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium hover:bg-white/10">Book a demo</button>
           </div>
         </div>
       </div>
@@ -887,6 +898,10 @@ export function FinalCTA() {
 
 /* ---------- Footer ---------- */
 export function Footer() {
+  const content = useSection("footer", {
+    tagline: "AI voice calling for modern businesses.",
+    copyright: "© 2026 WayneRing. All rights reserved.",
+  });
   const cols: [string, string[]][] = [
     ["Product", ["Features","AI Agents","Campaigns","Analytics","Integrations","Pricing"]],
     ["Solutions", ["Sales","Customer Support","Lead Generation","Appointment Booking"]],
@@ -903,7 +918,7 @@ export function Footer() {
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-brand"><Waves className="h-5 w-5 text-white"/></span>
               <span className="text-lg font-semibold">WayneRing</span>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">AI voice calling for modern businesses.</p>
+            <p className="mt-4 text-sm text-muted-foreground">{content.tagline}</p>
           </div>
           {cols.map(([h, items])=>(
             <div key={h}>
@@ -915,7 +930,7 @@ export function Footer() {
           ))}
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 md:flex-row">
-          <div className="text-xs text-muted-foreground">© 2026 WayneRing. All rights reserved.</div>
+          <div className="text-xs text-muted-foreground">{content.copyright}</div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Zap className="h-3.5 w-3.5 text-[var(--mint)]"/> Status · All systems operational
           </div>
